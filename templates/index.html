@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Delay Prediction</title>
+</head>
+<body>
+    <h2>Flight Delay Prediction</h2>
+    <form method="post">
+        <label>Origin:</label>
+        <select name="origin">
+            <option value="JFK">JFK</option>
+            <option value="LAX">LAX</option>
+            <option value="ORD">ORD</option>
+            <option value="DFW">DFW</option>
+            <option value="SFO">SFO</option>
+        </select><br><br>
+
+        <label>Destination:</label>
+        <select name="dest">
+            <option value="JFK">JFK</option>
+            <option value="LAX">LAX</option>
+            <option value="ORD">ORD</option>
+            <option value="DFW">DFW</option>
+            <option value="SFO">SFO</option>
+        </select><br><br>
+
+        <label>Departure Time (24h format):</label>
+        <input type="number" name="departure_time" min="0" max="23" required><br><br>
+
+        <label>Flight Duration (hours):</label>
+        <input type="number" name="duration" min="0.5" max="20" step="0.1" required><br><br>
+
+        <label>Airline:</label>
+        <select name="airline">
+            <option value="American">American</option>
+            <option value="Delta">Delta</option>
+            <option value="United">United</option>
+            <option value="Southwest">Southwest</option>
+        </select><br><br>
+
+        <input type="submit" value="Predict">
+    </form>
+
+    {% if prediction %}
+        <h3>Prediction: {{ prediction }}</h3>
+    {% endif %}
+</body>
+</html>

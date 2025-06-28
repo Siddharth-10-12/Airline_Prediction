@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Delay Prediction System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #ff6b6b;
+            --accent: #ffd166;
+            --success: #06d6a0;
+            --danger: #ef476f;
+            --warning: #ffd166;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --gray-dark: #343a40;
+            --white: #ffffff;
+            --gradient-primary: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            --gradient-secondary: linear-gradient(135deg, #ff6b6b 0%, #ff9e7d 100%);
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+            --radius-lg: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f0f4f8;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: var(--gradient-primary);
+            color: var(--white);
+            padding: 2rem 0;
+            text-align: center;
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .search-form {
+            background: var(--gradient-primary);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--white);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-family: inherit;
+            background-color: var(--white);
+            transition: var(--transition);
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--accent);
+            color: var(--dark);
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: #e6bc5c;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -0.5rem;
+        }
+
+        .form-col {
+            flex: 1;
+            padding: 0.5rem;
+            min-width: 200px;
+        }
+
+        .results {
+            margin-top: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-light);
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab:hover:not(.active) {
+            color: var(--primary-dark);
+        }
+
+        .flight-card {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-left: 4px solid var(--gray);
+            cursor: pointer;
+        }
+
+        .flight-card.delayed {
+            border-left-color: var(--danger);
+        }
+
+        .flight-card.on-time {
+            border-left-color: var(--success);
+        }
+
+        .flight-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .flight-card.active {
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+
+        .flight-info {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .flight-status {
+            flex: 1;
+            min-width: 150px;
+            text-align: right;
+        }
+
+        .airline {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .airline-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 0.75rem;
+        }
+
+        .time-info {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .departure, .arrival {
+            text-align: center;
+        }
+
+        .time {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .time-label {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .flight-path {
+            flex: 1;
+            margin: 0 1rem;
+            position: relative;
+            height: 2px;
+            background: var(--gray-light);
+        }
+
+        .flight-path::before, .flight-path::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--primary);
+            top: -2px;
+        }
+
+        .flight-path::before {
+            left: 0;
+        }
+
+        .flight-path::after {
+            right: 0;
+        }
+
+        .duration {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: var(--gray);
+            background: var(--white);
+            padding: 0 0.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background: rgba(6, 214, 160, 0.1);
+            color: var(--success);
+        }
+
+        .badge-danger {
+            background: rgba(239, 71, 111, 0.1);
+            color: var(--danger);
+        }
+
+        .badge-neutral {
+            background: rgba(108, 117, 125, 0.1);
+            color: var(--gray);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: var(--gray-light);
+            border-radius: var(--radius);
+            color: var(--gray);
+        }
+
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(67, 97, 238, 0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .flight-summary {
+            background: var(--primary);
+            color: var(--white);
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .flight-route {
+            display: flex;
+            align-items: center;
+        }
+
+        .flight-route-separator {
+            margin: 0 0.5rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .flight-count {
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+        }
+
+        .reference-btn {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .reference-btn:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: var(--white);
+            margin: 5% auto;
+            width: 90%;
+            max-width: 800px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            animation: modalFadeIn 0.3s;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--gray-light);
+            text-align: right;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .search-box input {
+            padding-left: 2.5rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        th {
+            font-weight: 600;
+            background: var(--gray-light);
+        }
+
+        tr:hover td {
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .status-on-time {
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        .status-delayed {
+            color: var(--danger);
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+
+        /* Map styles */
+        .map-container {
+            display: none;
+            height: 400px;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        #flightMap {
+            height: 100%;
+            width: 100%;
+        }
+
+        .map-info {
+            background: var(--white);
+            padding: 1rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 1rem;
+        }
+
+        .map-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .map-info p {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .map-info .badge {
+            margin-top: 0.5rem;
+        }
+
+        .map-toggle {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 1rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .map-toggle input {
+            margin-right: 0.5rem;
+            width: auto;
+        }
+
+        /* Prediction animation */
+        .prediction-animation {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .prediction-container {
+            text-align: center;
+            color: white;
+        }
+
+        .prediction-spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid rgba(67, 97, 238, 0.3);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        .prediction-text {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeInOut 2s ease-in-out infinite;
+        }
+
+        .prediction-progress {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .prediction-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            border-radius: 3px;
+            transition: width 0.1s linear;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .predict-btn {
+            background: var(--accent);
+            color: var(--dark);
+            border: none;
+            border-radius: var(--radius);
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .predict-btn:hover {
+            background: #e6bc5c;
+            transform: translateY(-2px);
+        }
+
+        .predict-btn:disabled {
+            background: var(--gray-light);
+            color: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @media (max-width: 768px) {
+            .form-col {
+                flex: 100%;
+            }
+
+            .flight-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .flight-status {
+                margin-top: 1rem;
+                text-align: left;
+                width: 100%;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+
+            .map-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Flight Delay Prediction System</h1>
+            <p>Find flights and check if they'll be on time</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="search-form">
+            <h2 style="color: white;">Search Flights</h2>
+            <form id="flightSearchForm">
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="fromAirport">From</label>
+                            <select id="fromAirport" required>
+                                <option value="">Select departure airport</option>
+                                <!-- Airports will be populated by JavaScript -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="toAirport">To</label>
+                            <select id="toAirport" required>
+                                <option value="">Select arrival airport</option>
+                                <!-- Airports will be populated by JavaScript -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="travelDate">Date</label>
+                            <input type="date" id="travelDate" required>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <button type="submit" class="btn btn-primary btn-block">Search Flights</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Searching for flights...</p>
+        </div>
+
+        <div id="noSearchResults" class="empty-state">
+            <div class="icon">✈️</div>
+            <h3>No Flights Selected</h3>
+            <p>Select departure, arrival airports and date to see available flights</p>
+        </div>
+
+        <div id="results" class="results" style="display: none;">
+            <div id="flightSummary" class="flight-summary">
+                <div class="flight-route">
+                    <span id="summaryFrom"></span>
+                    <span class="flight-route-separator">→</span>
+                    <span id="summaryTo"></span>
+                </div>
+                <div class="flight-count" id="flightCount"></div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" data-tab="all">All Flights</div>
+                <div class="tab" data-tab="ontime">On Time</div>
+                <div class="tab" data-tab="delayed">Delayed</div>
+            </div>
+
+            <div id="flightsList"></div>
+
+            <div id="noResults" class="empty-state" style="display: none;">
+                <div class="icon">🔍</div>
+                <h3>No Flights Found</h3>
+                <p>No flights found for your search criteria. Try different airports or dates.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prediction Animation -->
+    <div id="predictionAnimation" class="prediction-animation">
+        <div class="prediction-container">
+            <div class="prediction-spinner"></div>
+            <div class="prediction-text">Analyzing flight patterns...</div>
+            <div class="prediction-progress">
+                <div id="predictionBar" class="prediction-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Flight Delay Prediction System. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Airport data with coordinates
+        const airports = [
+        // Major US airports with coordinates
+        { name: "Atlanta Hartsfield-Jackson", code: "ATL", lat: 33.6407, lng: -84.4277 },
+        { name: "Los Angeles International", code: "LAX", lat: 33.9416, lng: -118.4085 },
+        { name: "Chicago O'Hare", code: "ORD", lat: 41.9742, lng: -87.9073 },
+        { name: "Dallas/Fort Worth International", code: "DFW", lat: 32.8998, lng: -97.0403 },
+        { name: "San Francisco International", code: "SFO", lat: 37.6213, lng: -122.3790 },
+        { name: "New York JFK", code: "JFK", lat: 40.6413, lng: -73.7781 },
+        { name: "Miami International", code: "MIA", lat: 25.7932, lng: -80.2906 },
+        
+        // California
+        { name: "San Diego International", code: "SAN", lat: 32.7338, lng: -117.1933 },
+        { name: "Sacramento International", code: "SMF", lat: 38.6957, lng: -121.5908 },
+        { name: "Oakland International", code: "OAK", lat: 37.7214, lng: -122.2208 },
+        { name: "John Wayne Airport (Orange County)", code: "SNA", lat: 33.6762, lng: -117.8675 },
+        
+        // Arizona
+        { name: "Phoenix Sky Harbor International", code: "PHX", lat: 33.4352, lng: -112.0101 },
+        { name: "Tucson International", code: "TUS", lat: 32.1161, lng: -110.9410 },
+        { name: "Phoenix-Mesa Gateway", code: "AZA", lat: 33.3078, lng: -111.6556 },
+        
+        // Kentucky
+        { name: "Louisville International", code: "SDF", lat: 38.1740, lng: -85.7364 },
+        { name: "Cincinnati/Northern Kentucky International", code: "CVG", lat: 39.0489, lng: -84.6678 },
+        { name: "Lexington Blue Grass Airport", code: "LEX", lat: 38.0365, lng: -84.6086 },
+        
+        // Oklahoma
+        { name: "Will Rogers World Airport (Oklahoma City)", code: "OKC", lat: 35.3931, lng: -97.6007 },
+        { name: "Tulsa International", code: "TUL", lat: 36.1984, lng: -95.8881 },
+        
+        // Ohio
+        { name: "Cleveland Hopkins International", code: "CLE", lat: 41.4115, lng: -81.8339 },
+        { name: "Port Columbus International", code: "CMH", lat: 39.9999, lng: -82.8872 },
+        { name: "Dayton International", code: "DAY", lat: 39.9024, lng: -84.2194 },
+        
+        // Additional major US airports
+        { name: "Denver International", code: "DEN", lat: 39.8561, lng: -104.6737 },
+        { name: "Seattle-Tacoma International", code: "SEA", lat: 47.4502, lng: -122.3088 },
+        { name: "Minneapolis-Saint Paul International", code: "MSP", lat: 44.8848, lng: -93.2223 },
+        { name: "Detroit Metropolitan", code: "DTW", lat: 42.2162, lng: -83.3554 },
+        { name: "Philadelphia International", code: "PHL", lat: 39.8729, lng: -75.2437 },
+        { name: "Boston Logan International", code: "BOS", lat: 42.3656, lng: -71.0096 },
+        { name: "LaGuardia Airport (New York)", code: "LGA", lat: 40.7769, lng: -73.8740 },
+        { name: "Newark Liberty International", code: "EWR", lat: 40.6895, lng: -74.1745 },
+        { name: "Washington Dulles International", code: "IAD", lat: 38.9531, lng: -77.4565 },
+        { name: "Ronald Reagan Washington National", code: "DCA", lat: 38.8512, lng: -77.0402 },
+        { name: "Charlotte Douglas International", code: "CLT", lat: 35.2144, lng: -80.9473 },
+        { name: "Salt Lake City International", code: "SLC", lat: 40.7899, lng: -111.9791 },
+        { name: "Portland International", code: "PDX", lat: 45.5898, lng: -122.5951 },
+        { name: "Nashville International", code: "BNA", lat: 36.1263, lng: -86.6774 },
+        { name: "Austin-Bergstrom International", code: "AUS", lat: 30.1975, lng: -97.6664 },
+        { name: "Houston George Bush Intercontinental", code: "IAH", lat: 29.9902, lng: -95.3368 },
+        { name: "Orlando International", code: "MCO", lat: 28.4312, lng: -81.3081 },
+        { name: "Tampa International", code: "TPA", lat: 27.9756, lng: -82.5333 },
+        { name: "Fort Lauderdale-Hollywood International", code: "FLL", lat: 26.0742, lng: -80.1506 },
+        { name: "Baltimore/Washington International", code: "BWI", lat: 39.1774, lng: -76.6684 },
+        { name: "Honolulu International", code: "HNL", lat: 21.3245, lng: -157.9251 }
+    ];
+
+    // Flight database with consistent delay predictions
+    const flightDatabase = {
+        // This will be populated with flight data
+    };
+
+    // Reference data for delay predictions
+    const delayReference = [];
+
+    // Calculate distance between two points using Haversine formula
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 3958.8; // Earth's radius in miles
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = 
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        const distance = R * c;
+        return distance;
+    }
+
+    // Generate random time within a range
+    function generateRandomTime(startHour, endHour) {
+        const hour = startHour + Math.floor(Math.random() * (endHour - startHour + 1));
+        const minute = Math.floor(Math.random() * 4) * 15; // 0, 15, 30, or 45
+        return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+    }
+
+    // Vary flight duration by adding some randomness
+    function varyFlightDuration(baseHours, baseMinutes) {
+        // Add or subtract up to 20% of the base duration
+        const totalBaseMinutes = baseHours * 60 + baseMinutes;
+        const variation = Math.floor((Math.random() * 0.4 - 0.2) * totalBaseMinutes);
+        
+        let newTotalMinutes = totalBaseMinutes + variation;
+        // Ensure minimum flight time of 30 minutes
+        newTotalMinutes = Math.max(30, newTotalMinutes);
+        
+        const hours = Math.floor(newTotalMinutes / 60);
+        const minutes = newTotalMinutes % 60;
+        
+        return { hours, minutes };
+    }
+
+    // Populate airport dropdowns
+    function populateAirports() {
+        const fromSelect = document.getElementById('fromAirport');
+        const toSelect = document.getElementById('toAirport');
+        
+        // Sort airports alphabetically by name
+        airports.sort((a, b) => a.name.localeCompare(b.name));
+        
+        airports.forEach(airport => {
+            const fromOption = document.createElement('option');
+            fromOption.value = airport.name;
+            fromOption.textContent = airport.name;
+            fromSelect.appendChild(fromOption);
+            
+            const toOption = document.createElement('option');
+            toOption.value = airport.name;
+            toOption.textContent = airport.name;
+            toSelect.appendChild(toOption);
+        });
+    }
+
+    // Find airport by name
+    function findAirport(name) {
+        return airports.find(airport => airport.name === name);
+    }
+
+    // Generate flight data for all airport combinations
+    function generateFlightData() {
+        const airlines = [
+            "American Airlines",
+            "Delta Airlines",
+            "United Airlines",
+            "Southwest Airlines",
+            "JetBlue Airways",
+            "Alaska Airlines",
+            "Spirit Airlines",
+            "Frontier Airlines"
+        ];
+        
+        const flightPrefix = {
+            "American Airlines": "AA",
+            "Delta Airlines": "DL",
+            "United Airlines": "UA",
+            "Southwest Airlines": "WN",
+            "JetBlue Airways": "B6",
+            "Alaska Airlines": "AS",
+            "Spirit Airlines": "NK",
+            "Frontier Airlines": "F9"
+        };
+        
+        // Generate flights for all airport combinations
+        for (let i = 0; i < airports.length; i++) {
+            for (let j = 0; j < airports.length; j++) {
+                if (i !== j) { // Ensure from and to are not the same
+                    const from = airports[i].name;
+                    const to = airports[j].name;
+                    const routeKey = `${from}-${to}`;
+                    
+                    flightDatabase[routeKey] = [];
+                    
+                    // Calculate base flight duration based on distance
+                    const from_airport = airports[i];
+                    const to_airport = airports[j];
+                    const distance = calculateDistance(from_airport.lat, from_airport.lng, to_airport.lat, to_airport.lng);
+                    
+                    // Base duration: ~500 mph + 30 min for takeoff/landing
+                    const baseFlightTimeHours = distance / 500;
+                    const baseTotalHours = baseFlightTimeHours + 0.5;
+                    const baseHours = Math.floor(baseTotalHours);
+                    const baseMinutes = Math.round((baseTotalHours - baseHours) * 60);
+                    
+                    // Generate 10-15 flights for each route
+                    const numFlights = 10 + Math.floor(Math.random() * 6);
+                    
+                    // Create departure time slots throughout the day
+                    // We'll create more slots than needed to ensure variety
+                    const timeSlots = [];
+                    
+                    // Early morning (5AM-9AM)
+                    for (let k = 0; k < 5; k++) {
+                        timeSlots.push(generateRandomTime(5, 8));
+                    }
+                    
+                    // Mid-day (9AM-3PM)
+                    for (let k = 0; k < 8; k++) {
+                        timeSlots.push(generateRandomTime(9, 14));
+                    }
+                    
+                    // Afternoon/Evening (3PM-10PM)
+                    for (let k = 0; k < 10; k++) {
+                        timeSlots.push(generateRandomTime(15, 21));
+                    }
+                    
+                    // Late night (10PM-12AM)
+                    for (let k = 0; k < 3; k++) {
+                        timeSlots.push(generateRandomTime(22, 23));
+                    }
+                    
+                    // Sort and remove duplicates
+                    const uniqueTimeSlots = [...new Set(timeSlots)].sort();
+                    
+                    // Select random slots for our flights
+                    const selectedSlots = [];
+                    while (selectedSlots.length < numFlights && uniqueTimeSlots.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * uniqueTimeSlots.length);
+                        selectedSlots.push(uniqueTimeSlots.splice(randomIndex, 1)[0]);
+                    }
+                    
+                    // Sort chronologically
+                    selectedSlots.sort();
+                    
+                    for (let k = 0; k < selectedSlots.length; k++) {
+                        const airline = airlines[Math.floor(Math.random() * airlines.length)];
+                        const flightNumber = `${flightPrefix[airline]}${1000 + Math.floor(Math.random() * 9000)}`;
+                        
+                        // Get departure time from slot
+                        const departureTime = selectedSlots[k];
+                        const [departureHour, departureMinute] = departureTime.split(':').map(Number);
+                        
+                        // Vary the flight duration for each flight
+                        const { hours, minutes } = varyFlightDuration(baseHours, baseMinutes);
+                        
+                        // Calculate arrival time based on varied duration
+                        let arrivalHour = departureHour + hours;
+                        let arrivalMinute = parseInt(departureMinute) + minutes;
+                        
+                        if (arrivalMinute >= 60) {
+                            arrivalHour += 1;
+                            arrivalMinute -= 60;
+                        }
+                        
+                        // Handle next day arrivals
+                        let nextDay = false;
+                        if (arrivalHour >= 24) {
+                            arrivalHour -= 24;
+                            nextDay = true;
+                        }
+                        
+                        const arrivalTime = `${arrivalHour.toString().padStart(2, '0')}:${arrivalMinute.toString().padStart(2, '0')}`;
+                        
+                        // Format duration string
+                        const durationStr = `${hours}h ${minutes > 0 ? minutes + 'm' : ''}`;
+                        
+                        // Deterministic delay prediction based on flight number
+                        // This ensures the same flight always has the same delay prediction
+                        const flightNumberSum = flightNumber
+                            .split('')
+                            .reduce((sum, char) => sum + char.charCodeAt(0), 0);
+                        const isDelayed = flightNumberSum % 10 < 3; // 30% chance of delay
+                        
+                        const flight = {
+                            id: `${airports[i].code}-${airports[j].code}-${flightNumber}`,
+                            airline,
+                            flightNumber,
+                            departureTime,
+                            arrivalTime: nextDay ? `${arrivalTime} (+1)` : arrivalTime,
+                            duration: durationStr,
+                            from,
+                            to,
+                            fromCode: airports[i].code,
+                            toCode: airports[j].code,
+                            distance: `${Math.round(distance)} miles`,
+                            class: "Economy",
+                            isDelayed
+                        };
+                        
+                        flightDatabase[routeKey].push(flight);
+                        
+                        // Add to reference data
+                        delayReference.push({
+                            from,
+                            to,
+                            flightNumber,
+                            status: isDelayed ? "Delayed" : "On Time"
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    // Search for flights
+    function searchFlights(from, to, date) {
+        const routeKey = `${from}-${to}`;
+        return flightDatabase[routeKey] || [];
+    }
+
+    // Run prediction animation
+    function runPredictionAnimation(flightId) {
+        return new Promise((resolve) => {
+            const predictionAnimation = document.getElementById('predictionAnimation');
+            const predictionBar = document.getElementById('predictionBar');
+            const predictionText = document.querySelector('.prediction-text');
+            
+            // Show animation
+            predictionAnimation.style.display = 'flex';
+            
+            // Animation texts
+            const animationTexts = [
+                "Analyzing flight patterns...",
+                "Checking weather conditions...",
+                "Processing with ML model...",
+                "Finalizing prediction..."
+            ];
+            
+            let currentTextIndex = 0;
+            let progress = 0;
+            
+            // Update text periodically
+            const textInterval = setInterval(() => {
+                currentTextIndex = (currentTextIndex + 1) % animationTexts.length;
+                predictionText.textContent = animationTexts[currentTextIndex];
+            }, 1000);
+            
+            // Update progress bar
+            const progressInterval = setInterval(() => {
+                progress += 1;
+                predictionBar.style.width = `${progress}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    clearInterval(textInterval);
+                    
+                    setTimeout(() => {
+                        predictionAnimation.style.display = 'none';
+                        predictionBar.style.width = '0%';
+                        resolve();
+                    }, 500);
+                }
+            }, 60); // 60ms * 100 = ~6 seconds total
+        });
+    }
+
+    // Display flights
+    function displayFlights(flights, from, to, date) {
+        const resultsList = document.getElementById('flightsList');
+        const noResults = document.getElementById('noResults');
+        const results = document.getElementById('results');
+        const noSearchResults = document.getElementById('noSearchResults');
+        const flightCount = document.getElementById('flightCount');
+        const summaryFrom = document.getElementById('summaryFrom');
+        const summaryTo = document.getElementById('summaryTo');
+        
+        // Update summary
+        summaryFrom.textContent = from;
+        summaryTo.textContent = to;
+        flightCount.textContent = `${flights.length} flights`;
+        
+        // Show/hide appropriate sections
+        if (flights.length === 0) {
+            resultsList.innerHTML = '';
+            noResults.style.display = 'block';
+            results.style.display = 'block';
+            noSearchResults.style.display = 'none';
+        } else {
+            resultsList.innerHTML = '';
+            noResults.style.display = 'none';
+            results.style.display = 'block';
+            noSearchResults.style.display = 'none';
+            
+            // Display each flight
+            flights.forEach(flight => {
+                const flightCard = document.createElement('div');
+                flightCard.className = 'flight-card';
+                flightCard.dataset.id = flight.id;
+                flightCard.dataset.delayed = flight.isDelayed;
+                
+                flightCard.innerHTML = `
+                    <div class="flight-info">
+                        <div class="airline">
+                            <div class="airline-logo">${flight.airline.charAt(0)}</div>
+                            <div>
+                                <h3>${flight.airline}</h3>
+                                <p>Flight ${flight.flightNumber} <small>(${flight.distance})</small></p>
+                            </div>
+                        </div>
+                        <div class="time-info">
+                            <div class="departure">
+                                <div class="time">${flight.departureTime}</div>
+                                <div class="time-label">Departure</div>
+                            </div>
+                            <div class="flight-path">
+                                <div class="duration">${flight.duration}</div>
+                            </div>
+                            <div class="arrival">
+                                <div class="time">${flight.arrivalTime}</div>
+                                <div class="time-label">Arrival</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flight-status">
+                        <button class="predict-btn" data-flight-id="${flight.id}">Predict Delay</button>
+                    </div>
+                `;
+                
+                resultsList.appendChild(flightCard);
+            });
+            
+            // Add event listeners to predict buttons
+            document.querySelectorAll('.predict-btn').forEach(button => {
+                button.addEventListener('click', async function() {
+                    const flightId = this.dataset.flightId;
+                    const flightCard = document.querySelector(`.flight-card[data-id="${flightId}"]`);
+                    const isDelayed = flightCard.dataset.delayed === 'true';
+                    
+                    // Disable button
+                    this.disabled = true;
+                    this.textContent = 'Predicting...';
+                    
+                    // Run prediction animation
+                    await runPredictionAnimation(flightId);
+                    
+                    // Update flight card with prediction result
+                    if (isDelayed) {
+                        flightCard.classList.add('delayed');
+                        this.parentElement.innerHTML = `
+                            <div class="badge badge-danger">Predicted Delay</div>
+                        `;
+                    } else {
+                        flightCard.classList.add('on-time');
+                        this.parentElement.innerHTML = `
+                            <div class="badge badge-success">On Time</div>
+                        `;
+                    }
+                    
+                    // Update dataset for filtering
+                    flightCard.dataset.status = isDelayed ? 'delayed' : 'ontime';
+                });
+            });
+        }
+    }
+
+    // Filter flights by status
+    function filterFlights(status) {
+        const flightCards = document.querySelectorAll('.flight-card');
+        
+        flightCards.forEach(card => {
+            if (status === 'all' || card.dataset.status === status) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    // Initialize the application
+    function init() {
+        populateAirports();
+        generateFlightData();
+        
+        // Set minimum date to today
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        document.getElementById('travelDate').min = `${yyyy}-${mm}-${dd}`;
+        document.getElementById('travelDate').value = `${yyyy}-${mm}-${dd}`;
+        
+        // Form submission
+        document.getElementById('flightSearchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const from = document.getElementById('fromAirport').value;
+            const to = document.getElementById('toAirport').value;
+            const date = document.getElementById('travelDate').value;
+            
+            if (!from || !to || !date) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (from === to) {
+                alert('Departure and arrival airports cannot be the same');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('noSearchResults').style.display = 'none';
+            
+            // Simulate loading delay
+            setTimeout(() => {
+                const flights = searchFlights(from, to, date);
+                displayFlights(flights, from, to, date);
+                document.getElementById('loading').style.display = 'none';
+            }, 1000);
+        });
+        
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                filterFlights(this.dataset.tab);
+            });
+        });
+    }
+
+    // Initialize when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
